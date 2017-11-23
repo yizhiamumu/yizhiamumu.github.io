@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>从一杯果汁浅谈点点医生充值模块设计 | 一只阿木木</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="参考点点医生数据分析原文：点点医生pk宝宝好孕， 大数据告诉你真相 得出的无脑结论：  1.用户有较明显的地区性分布， 2.年龄群体分布相对集中， 3.摩羯座有突出的表现（文末有彩蛋哦）。  从一杯果汁浅谈点点医生充值提现模块设计前言：一杯果汁的需求 小明打完球回家，感觉很累，想喝果汁。 妈妈在做饭，没有时间给他买果汁。 此时的小明很累，也没有力气去买。  产品需求有了，问题该怎么解决？  题目剖">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从一杯果汁浅谈点点医生充值模块设计">
+<meta property="og:url" content="http://yoursite.com/2017/11/23/从一杯果汁浅谈点点医生充值模块设计/index.html">
+<meta property="og:site_name" content="一只阿木木">
+<meta property="og:description" content="参考点点医生数据分析原文：点点医生pk宝宝好孕， 大数据告诉你真相 得出的无脑结论：  1.用户有较明显的地区性分布， 2.年龄群体分布相对集中， 3.摩羯座有突出的表现（文末有彩蛋哦）。  从一杯果汁浅谈点点医生充值提现模块设计前言：一杯果汁的需求 小明打完球回家，感觉很累，想喝果汁。 妈妈在做饭，没有时间给他买果汁。 此时的小明很累，也没有力气去买。  产品需求有了，问题该怎么解决？  题目剖">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/2C90D11E92AD4B82BE2E6E7D8EBC14C4/2290">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/B3C265C0ABB04C189F36E1DFA0313501/2289">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/32DCA75AFD3A47BF95F575ACCAA6681A/2293">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/DD8A359B18B047E6801923F08153B3C5/2292">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/C90A09CA693A4CF9BC1DBF24EBFE5B67/2312">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/93A86701E824480C9B1CF0BCAF38C8CF/2320">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/71916E7E3B434FE5AB55B4FD790A4121/2317">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/A307F60562E84696945E7E5C1B74B3EB/2323">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/B9ADD9623DA6447E91661D7F9E2E4C39/2326">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/75CADF2D8C8544518F5A6DAC0E90A4F1/2306">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/2A042720415044FA896DE32FEE77CF61/2302">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/64BECC7F501948DFBFE35D76242A0FB8/2304">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/8C09DEE6AD93491FB653EF842C3543A6/2303">
+<meta property="og:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/7FD9FEDC5F1E43B6B62E7C568A23E1A1/2308">
+<meta property="og:updated_time" content="2017-11-23T08:20:50.482Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从一杯果汁浅谈点点医生充值模块设计">
+<meta name="twitter:description" content="参考点点医生数据分析原文：点点医生pk宝宝好孕， 大数据告诉你真相 得出的无脑结论：  1.用户有较明显的地区性分布， 2.年龄群体分布相对集中， 3.摩羯座有突出的表现（文末有彩蛋哦）。  从一杯果汁浅谈点点医生充值提现模块设计前言：一杯果汁的需求 小明打完球回家，感觉很累，想喝果汁。 妈妈在做饭，没有时间给他买果汁。 此时的小明很累，也没有力气去买。  产品需求有了，问题该怎么解决？  题目剖">
+<meta name="twitter:image" content="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/2C90D11E92AD4B82BE2E6E7D8EBC14C4/2290">
+  
+    <link rel="alternate" href="/atom.xml" title="一只阿木木" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">一只阿木木</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-从一杯果汁浅谈点点医生充值模块设计" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/23/从一杯果汁浅谈点点医生充值模块设计/" class="article-date">
+  <time datetime="2017-11-23T08:01:05.595Z" itemprop="datePublished">2017-11-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      从一杯果汁浅谈点点医生充值模块设计
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>参考点点医生数据分析原文：点点医生pk宝宝好孕， 大数据告诉你真相</p>
+<p>得出的无脑结论：</p>
+<ul>
+<li>1.用户有较明显的地区性分布，</li>
+<li>2.年龄群体分布相对集中，</li>
+<li>3.摩羯座有突出的表现（文末有彩蛋哦）。</li>
+</ul>
+<h2 id="从一杯果汁浅谈点点医生充值提现模块设计"><a href="#从一杯果汁浅谈点点医生充值提现模块设计" class="headerlink" title="从一杯果汁浅谈点点医生充值提现模块设计"></a>从一杯果汁浅谈点点医生充值提现模块设计</h2><h3 id="前言：一杯果汁的需求"><a href="#前言：一杯果汁的需求" class="headerlink" title="前言：一杯果汁的需求"></a>前言：一杯果汁的需求</h3><blockquote>
+<p>小明打完球回家，感觉很累，想喝果汁。</p>
+<p>妈妈在做饭，没有时间给他买果汁。</p>
+<p>此时的小明很累，也没有力气去买。</p>
+</blockquote>
+<p>产品需求有了，问题该怎么解决？</p>
+<p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/2C90D11E92AD4B82BE2E6E7D8EBC14C4/2290" alt="image"></p>
+<h3 id="题目剖析："><a href="#题目剖析：" class="headerlink" title="题目剖析："></a>题目剖析：</h3><p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/B3C265C0ABB04C189F36E1DFA0313501/2289" alt="image"></p>
+<p>妈妈是产品经理，需求的承接方，全家人是用户。全家人吃饭是第一需求，小明是个别用户，喝果汁是第二需求，如何在有限的投入和受限的情况下，尽可能的实现小明的需求，解决小明的痛点？</p>
+<p>翻译成产品语言就是：如何在有限的投入或者受限的情况下，尽可能地实现用户的需求，并解决用户的痛点。</p>
+<h3 id="场景分析："><a href="#场景分析：" class="headerlink" title="场景分析："></a>场景分析：</h3><p>小明累，妈妈没空。</p>
+<p>需求痛点：</p>
+<ul>
+<li>小明的痛点和需求：</li>
+<li>小明的痛点：渴。小明的需求：果汁。真实需求：解渴。</li>
+</ul>
+<p>妈妈的忙碌和选择：<br>全家的吃饭比小明的喝水更加必要。</p>
+<p>小明的需求和安抚：</p>
+<ul>
+<li>1先用白开水满足用户基本需求。</li>
+<li>2引导小明注意到全部用户的饭。</li>
+<li>3做完晚饭榨果汁买果汁。</li>
+<li>4下次逛街的时候买果汁。</li>
+</ul>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>1不同的时间，不同的场景会有不同的需求。<br>2产品优先级是满足大多数用户需求。<br>3开发当前需求，给别一个需求一个简单快速的解决方案。<br>4下一个周期要考虑场景用户的需求。</p>
+<hr>
+<h2 id="高级产品分析："><a href="#高级产品分析：" class="headerlink" title="高级产品分析："></a>高级产品分析：</h2><p>全家人的第一需求是吃饭，小明个别用户的个别需求是喝果汁，妈妈如何在有限的投入和受限情况下，尽可能地解决小明的需求痛点？</p>
+<p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/32DCA75AFD3A47BF95F575ACCAA6681A/2293" alt="image"></p>
+<h3 id="产品翻译：如何在有限的投入或者受限情况下，尽可能地实现用户的需求，并解决用户痛点。"><a href="#产品翻译：如何在有限的投入或者受限情况下，尽可能地实现用户的需求，并解决用户痛点。" class="headerlink" title="产品翻译：如何在有限的投入或者受限情况下，尽可能地实现用户的需求，并解决用户痛点。"></a>产品翻译：如何在有限的投入或者受限情况下，尽可能地实现用户的需求，并解决用户痛点。</h3><h3 id="一、场景还原："><a href="#一、场景还原：" class="headerlink" title="一、场景还原："></a>一、场景还原：</h3><p>小明打球–球场打球–很累–回家–口渴想喝果汁–妈妈准备晚饭</p>
+<p>如果在球场小明就口渴了，那么解决一整个球场的解渴问题比小明回家想喝水的意义更大。</p>
+<p>那么需求分析：如何解决打球时候能喝果汁？<br>知识点：透过表象寻找需求在不同场景的解决方法。<br>1在球场边设立自动售饮料或小卖部<br>2自己带杯子，球场提供水源<br>3球场的饮料快送服务</p>
+<h3 id="二、不同用户"><a href="#二、不同用户" class="headerlink" title="二、不同用户"></a>二、不同用户</h3><p>把妈妈作为用户。</p>
+<p>需求分析：如何解放父母，更多时间陪孩子。</p>
+<p>知识点：换位思考，任何人都可以是用户</p>
+<ul>
+<li><ol>
+<li>妈妈在忙，找爸爸帮忙</li>
+</ol>
+</li>
+<li><ol>
+<li>外卖点起来</li>
+</ol>
+</li>
+<li><ol>
+<li>大方向，人工智能。。。。</li>
+</ol>
+</li>
+</ul>
+<h3 id="三、需求与痛点"><a href="#三、需求与痛点" class="headerlink" title="三、需求与痛点"></a>三、需求与痛点</h3><p>小明累的痛点，累和买果汁是什么关系？</p>
+<p>需求分析：如何进行激励以达到需求？</p>
+<p>知识点：站在用户角度，不要一味满足用户</p>
+<ul>
+<li><ol>
+<li>妈妈鼓励小明去买果汁</li>
+</ol>
+</li>
+<li><ol>
+<li>妈妈鼓励小明喝牛奶</li>
+</ol>
+</li>
+</ul>
+<h3 id="四、新开脑洞"><a href="#四、新开脑洞" class="headerlink" title="四、新开脑洞"></a>四、新开脑洞</h3><ul>
+<li><ol>
+<li>如果小明不打篮球就没有那么多问题了</li>
+</ol>
+</li>
+<li><ol>
+<li>为什么喝果汁一定要找妈妈</li>
+</ol>
+</li>
+<li><ol>
+<li>打球不带水引发的事故</li>
+</ol>
+</li>
+<li><ol>
+<li>下次要雪碧呢</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="产品的后现代化"><a href="#产品的后现代化" class="headerlink" title="产品的后现代化"></a>产品的后现代化</h2><p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/DD8A359B18B047E6801923F08153B3C5/2292" alt="image"></p>
+<p>问题本身：伪需求。</p>
+<p>伪需求：看似痛点需求，其实不需要本产品解决或可以用其他解决方法引导用户。</p>
+<p>首先：需求场景广泛。用户在任何时间空间下都有可能口渴。</p>
+<p>其次：解决方案有很多。</p>
+<p>再者：只有用户清楚自己的需求。</p>
+<h3 id="知识点："><a href="#知识点：" class="headerlink" title="知识点："></a>知识点：</h3><p>产品经理更多要注重产品，而不是过度分析需求。</p>
+<p>真正的需求优先级需要按照真正的当前场景下做出明确的判断。</p>
+<p>解决用户的核心需求的产品才能打开市场。</p>
+<p>研究方向：</p>
+<p>如何利用用户使用场景构建更好的用户体验和产品功能</p>
+<p>如何对已成体系的产品做精简</p>
+<blockquote>
+<p>一个金句：<br>不做功能性产品经理</p>
+</blockquote>
+<h2 id="产品实战：从一杯果汁到充值提现设计"><a href="#产品实战：从一杯果汁到充值提现设计" class="headerlink" title="产品实战：从一杯果汁到充值提现设计"></a>产品实战：从一杯果汁到充值提现设计</h2><hr>
+<p><strong>点点医生充值提现模块架构预设计之不做功能性产品设计</strong></p>
+<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>支付平台，直播打赏，付费阅读，电商消费等都需要充值提现功能，点点医生提供的预约挂号，在线咨询，体检预约等健康服务，同样作为一款涉及业务金钱方面的产品，而凡是此类产品都涉及余额转账系统。</p>
+<p>可细分为三个功能模块：充值，提现，帐户绑定。</p>
+<p>注：目前点点医生产品提供在线支付、在线退款、帐户提现等功能，有部分细分模块还处于开发阶段，这里只谈理论设计架构。</p>
+<h3 id="一、充值类型"><a href="#一、充值类型" class="headerlink" title="一、充值类型"></a>一、充值类型</h3><h4 id="1-快捷按钮充值"><a href="#1-快捷按钮充值" class="headerlink" title="1.快捷按钮充值"></a>1.快捷按钮充值</h4><p>适用于对充值金额没有大的灵活需求或对业务产品的针对性没有那么高。</p>
+<p>优点：简化用户操作，操作体验好。不需要太多的输入判断，开发简便。</p>
+<p>缺点：充值金额的灵活性差。</p>
+<p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/C90A09CA693A4CF9BC1DBF24EBFE5B67/2312" alt="image"><br>配图：支付宝话费，ofo，百度外卖</p>
+<h4 id="2-密码兑换充值"><a href="#2-密码兑换充值" class="headerlink" title="2.密码兑换充值"></a>2.密码兑换充值</h4><p>十年前，Q币充值，游戏充值，都是采用线下店铺销售卖点卡的模式，用户刮点卡获得密码，上网兑换，达到充值的效果。</p>
+<p>目前密码兑换充值的方式以线上况换码代替点卡广泛用于运营维护。如节假日赠送兑换码，电商平台与B端的合作等。</p>
+<p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/93A86701E824480C9B1CF0BCAF38C8CF/2320" alt="image"><br>配图：百度糯米，百度外卖，天天菜园</p>
+<h4 id="3-输入金额充值"><a href="#3-输入金额充值" class="headerlink" title="3.输入金额充值"></a>3.输入金额充值</h4><p>优点：灵活性高，满足不同金额需求</p>
+<p>缺点：操作复杂，判断逻辑多</p>
+<p>拍砖的问：一个输入框就好了，有什么判断逻辑？<br>甩一脸答：输入框的默认显示是什么，输入类型作什么限制，输入的最大金额，最小金额，输入框校验还是点击充值按钮判断，判断的要求，判断后的提示如何显示，键盘的弹出规则，隐藏规则，键盘类型。。。</p>
+<p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/71916E7E3B434FE5AB55B4FD790A4121/2317" alt="image"><br>配图：微信，天天中彩票，天天果园</p>
+<h3 id="二、充值模块需求细节"><a href="#二、充值模块需求细节" class="headerlink" title="二、充值模块需求细节"></a>二、充值模块需求细节</h3><p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/A307F60562E84696945E7E5C1B74B3EB/2323" alt="image"><br>输入快捷按钮+金额充值的原型设计</p>
+<h4 id="1-进行充值业务的条件说明"><a href="#1-进行充值业务的条件说明" class="headerlink" title="1.进行充值业务的条件说明"></a>1.进行充值业务的条件说明</h4><p>进入充值页面前是否完成实名认证，未完成，引导用户完成认证。</p>
+<h4 id="2-默认显示规则的设定"><a href="#2-默认显示规则的设定" class="headerlink" title="2.默认显示规则的设定"></a>2.默认显示规则的设定</h4><p>页面的默认显示，输入框内的显示，快捷充值按钮的显示，充值按钮的显示，键盘的弹出情况说明。</p>
+<h4 id="3-文本框获得焦点时以及键盘交互说明"><a href="#3-文本框获得焦点时以及键盘交互说明" class="headerlink" title="3.文本框获得焦点时以及键盘交互说明"></a>3.文本框获得焦点时以及键盘交互说明</h4><p>当文本框获得焦点时，文本框提示文字隐藏，不清空文本框数字，从下往上弹出键盘，因为需要输入内容为数字且可输入小数点，所以键盘类型为点“点” 的数字键盘。</p>
+<p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/B9ADD9623DA6447E91661D7F9E2E4C39/2326" alt="image"><br>配图：带“点”的数字键盘</p>
+<h4 id="4-文本框失去焦点时以及键盘交互说明"><a href="#4-文本框失去焦点时以及键盘交互说明" class="headerlink" title="4.文本框失去焦点时以及键盘交互说明"></a>4.文本框失去焦点时以及键盘交互说明</h4><p>失去焦点时，从上往下收起键盘，当文本框为空时，显示提示文字“请输入充值金额”且充值按钮显示“充值0元”</p>
+<h4 id="5-输入框输入规则说明"><a href="#5-输入框输入规则说明" class="headerlink" title="5.输入框输入规则说明"></a>5.输入框输入规则说明</h4><h5 id="5-1可输入小数点。小数点保留2位，第3位输入无效。"><a href="#5-1可输入小数点。小数点保留2位，第3位输入无效。" class="headerlink" title="5.1可输入小数点。小数点保留2位，第3位输入无效。"></a>5.1可输入小数点。小数点保留2位，第3位输入无效。</h5><h5 id="5-2小数点只在手动输入时显示。"><a href="#5-2小数点只在手动输入时显示。" class="headerlink" title="5.2小数点只在手动输入时显示。"></a>5.2小数点只在手动输入时显示。</h5><p>if 快捷充值金额选中时，输入框不显示小数点<br>（即充值按钮也不显示小数点）</p>
+<h5 id="5-3输入数字必须大于等于5，否则点击充值按钮时，"><a href="#5-3输入数字必须大于等于5，否则点击充值按钮时，" class="headerlink" title="5.3输入数字必须大于等于5，否则点击充值按钮时，"></a>5.3输入数字必须大于等于5，否则点击充值按钮时，</h5><p>显示“充值金额不能少于5元”，3s 隐藏。</p>
+<h5 id="5-4-输入框实时校验。"><a href="#5-4-输入框实时校验。" class="headerlink" title="5.4 输入框实时校验。"></a>5.4 输入框实时校验。</h5><p>当输入数据大于999 999.99 时显示“金额最大999 999.99”，<br>且输入框数字变为999 999.99</p>
+<p>注：最大数字判断一般分为2种，一种是位次判断，即输入多少位后再输入数字无效，还有一种是数字判断，以上属于数字判断。</p>
+<h4 id="6-当输入框为空时，点击充值按钮的交互说明"><a href="#6-当输入框为空时，点击充值按钮的交互说明" class="headerlink" title="6.当输入框为空时，点击充值按钮的交互说明"></a>6.当输入框为空时，点击充值按钮的交互说明</h4><p>当输入框为空，即用户清空了输入框内的数字，点击充值按钮时，显示”请选择充值金额”，3s 隐藏。</p>
+<h4 id="7-充值金额的可提现或者处理情况说明"><a href="#7-充值金额的可提现或者处理情况说明" class="headerlink" title="7.充值金额的可提现或者处理情况说明"></a>7.充值金额的可提现或者处理情况说明</h4><p>有些业务会涉及到“冻结金额”，即不可提现金额。可能是为防止信用卡套现，也可能是因为充值金额需要消费，不能提，也可能是充值满7天才可以提现等。</p>
+<h4 id="8-充值成功的反馈提示"><a href="#8-充值成功的反馈提示" class="headerlink" title="8.充值成功的反馈提示"></a>8.充值成功的反馈提示</h4><p>充值成功后反馈提示，是中转新页面提示充值成功，还是页面按钮变为充值成功，自动跳转金额页面，反馈方式有很多，需要产品经理进行数据分析调查后标注清楚。</p>
+<h3 id="三、充值第三方支付的业务逻辑"><a href="#三、充值第三方支付的业务逻辑" class="headerlink" title="三、充值第三方支付的业务逻辑"></a>三、充值第三方支付的业务逻辑</h3><p>以app 支付宝方式充值并发起银行卡充值支付宝金额为例<br><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/75CADF2D8C8544518F5A6DAC0E90A4F1/2306" alt="image"></p>
+<h3 id="四、提现的类型"><a href="#四、提现的类型" class="headerlink" title="四、提现的类型"></a>四、提现的类型</h3><h4 id="1-第三方服务接口提现"><a href="#1-第三方服务接口提现" class="headerlink" title="1.第三方服务接口提现"></a>1.第三方服务接口提现</h4><p>优点：提现速度快，用户体验好。不需要线下打款，节约企业资源，降低打款失误风险。</p>
+<p>缺点：提现接口比充值接口复杂很多，开发成本大。第三方接口合作，对企业的帐户安全有风险。企业对提现资金的可控性可能会降低。</p>
+<p>目前，多数大平台都采用这种方式，与第三方服务接口合作。如共享单车。</p>
+<h4 id="2-人工线下打款到账"><a href="#2-人工线下打款到账" class="headerlink" title="2.人工线下打款到账"></a>2.人工线下打款到账</h4><p>优点：减少开发，产品上线快。不需要与第三方接口合作，增强企业对资金的掌控，可以加入审核机制。<br>缺点：时效性，用户容易存在焦虑感。人工打款，增加企业人工成本，存在失误风险。时效性问题产生的同时，会产生信息不对称，如帐户已扣款，线下未到账。</p>
+<h3 id="五、提现需求相关细节"><a href="#五、提现需求相关细节" class="headerlink" title="五、提现需求相关细节"></a>五、提现需求相关细节</h3><p>以提现页面原型为例<br><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/2A042720415044FA896DE32FEE77CF61/2302" alt="image"></p>
+<p>（注：可对照上文充值需求细节）</p>
+<h4 id="1-进行提现业务的条件说明"><a href="#1-进行提现业务的条件说明" class="headerlink" title="1.进行提现业务的条件说明"></a>1.进行提现业务的条件说明</h4><p>判断是否实名认证，判断是否添加提现帐户，及相关页面认证引导。<br>（注：满100元才能提现）</p>
+<h4 id="2-提现账户的设置"><a href="#2-提现账户的设置" class="headerlink" title="2.提现账户的设置"></a>2.提现账户的设置</h4><p>提现帐户的设置和选择，app 是智能设计一个提现账户还是多个提现账户，提现账户的类型有哪些，绑定提现账户需要填写的内容，未添加提现账户的引导。</p>
+<h4 id="3-文本框获得焦点以及键盘交互说明"><a href="#3-文本框获得焦点以及键盘交互说明" class="headerlink" title="3.文本框获得焦点以及键盘交互说明"></a>3.文本框获得焦点以及键盘交互说明</h4><p>当文本框获得焦点时，文本框提示文字隐藏，不清空文本框数字，从下往上弹出键盘，因为需要输入内容为数字且可输入小数点，所以键盘类型为带“点”的数字键盘。</p>
+<h4 id="4-文本框失去焦点以及键盘交互说明"><a href="#4-文本框失去焦点以及键盘交互说明" class="headerlink" title="4.文本框失去焦点以及键盘交互说明"></a>4.文本框失去焦点以及键盘交互说明</h4><p>当失去焦点时，从上往下收起键盘。<br>当文本框为空时，显示提示文字“请输入提现金额”</p>
+<h4 id="5-输入框输入规则说明-1"><a href="#5-输入框输入规则说明-1" class="headerlink" title="5.输入框输入规则说明"></a>5.输入框输入规则说明</h4><p>哎哎哎，刚才那个提问一个输入框有什么复杂的的是不是该把砖放下了。</p>
+<h5 id="5-1可输入小数点，小数点只在手动输入时显示，小数点后可输入2位数，第3位输入无效。"><a href="#5-1可输入小数点，小数点只在手动输入时显示，小数点后可输入2位数，第3位输入无效。" class="headerlink" title="5.1可输入小数点，小数点只在手动输入时显示，小数点后可输入2位数，第3位输入无效。"></a>5.1可输入小数点，小数点只在手动输入时显示，小数点后可输入2位数，第3位输入无效。</h5><h5 id="5-2输入数字必须大于等于10。否则点击充值按钮显示“提现金额不能少于10元”，3s-隐藏。"><a href="#5-2输入数字必须大于等于10。否则点击充值按钮显示“提现金额不能少于10元”，3s-隐藏。" class="headerlink" title="5.2输入数字必须大于等于10。否则点击充值按钮显示“提现金额不能少于10元”，3s 隐藏。"></a>5.2输入数字必须大于等于10。否则点击充值按钮显示“提现金额不能少于10元”，3s 隐藏。</h5><p>注：产品业务需有判断，输入金额不能大于可提现金额。此处未限制输入的最大金额。</p>
+<h4 id="6-当输入框为空时，点击充值按钮的交互说明-1"><a href="#6-当输入框为空时，点击充值按钮的交互说明-1" class="headerlink" title="6.当输入框为空时，点击充值按钮的交互说明"></a>6.当输入框为空时，点击充值按钮的交互说明</h4><p>当输入框为空，点击提现按钮时显示“请输入提现金额”，3s 隐藏</p>
+<h4 id="7-提现申请成功的反馈提示"><a href="#7-提现申请成功的反馈提示" class="headerlink" title="7.提现申请成功的反馈提示"></a>7.提现申请成功的反馈提示</h4><p>是跳转新页面提示充值成功，还是该页面弹窗提现申请成功，提示的内容需要结合产品的提现逻辑向用户进行说明，以免产生不必要的焦虑。</p>
+<p>弹窗的提示“提现申请成功”，本原型提现的相关说明，全部放入右上角说明页面。</p>
+<h4 id="8-是否设置提现密码"><a href="#8-是否设置提现密码" class="headerlink" title="8.是否设置提现密码"></a>8.是否设置提现密码</h4><p>依据不同产品类型和业务逻辑来确定是否需要或有必要设置提现密码，提现密码的安全性。</p>
+<h3 id="六、提现的业务逻辑"><a href="#六、提现的业务逻辑" class="headerlink" title="六、提现的业务逻辑"></a>六、提现的业务逻辑</h3><h4 id="1-第三方支付接口流程"><a href="#1-第三方支付接口流程" class="headerlink" title="1.第三方支付接口流程"></a>1.第三方支付接口流程</h4><p>以app 调用支付宝接口完成即时提现为例</p>
+<p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/64BECC7F501948DFBFE35D76242A0FB8/2304" alt="image"></p>
+<h4 id="2-人工线下打款流程"><a href="#2-人工线下打款流程" class="headerlink" title="2.人工线下打款流程"></a>2.人工线下打款流程</h4><p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/8C09DEE6AD93491FB653EF842C3543A6/2303" alt="image"></p>
+<h3 id="七、如何考虑充值提现"><a href="#七、如何考虑充值提现" class="headerlink" title="七、如何考虑充值提现"></a>七、如何考虑充值提现</h3><h4 id="1-产品类型"><a href="#1-产品类型" class="headerlink" title="1.产品类型"></a>1.产品类型</h4><p>不同的产品类型需要考察不同的充值提现需求</p>
+<p>比如支付平台类产品，充值数字的灵活性，需要用到输入金额充值，以及输入金额的额度需要根据产品类型和业务而定。</p>
+<p>比如O2O类的产品，主要目的是为了消费，一般只会在发起消费需求的时候直接利用第三方支付平台支付，而不会先提前充余额，那有些产品为了达到用户充金额的运营效果，会出现快捷充值按钮，并附“充100赠100”等活动。</p>
+<p>想一想，点点医生属于哪一类？</p>
+<h4 id="2-目标用户"><a href="#2-目标用户" class="headerlink" title="2.目标用户"></a>2.目标用户</h4><p>产品准则：用户至上。<br>产品目标用户是什么样的人，面对不同的目标群，充值提现也会有不同。如企业的金额限制就会不一样，或者在C端用户中加入企业兑换码充值。</p>
+<h4 id="3-业务逻辑"><a href="#3-业务逻辑" class="headerlink" title="3.业务逻辑"></a>3.业务逻辑</h4><p>充值提现一定要有逻辑图，充值提现以及资金去向，“冻结金额”的概念，可能有些设计不需要展示，但是不开发上需要设计出来。</p>
+<p>充值提现的功能使用条件，触发条件，充值提现的页面设计都需要根据产品业务来整理，做到业务流畅。</p>
+<h4 id="4-注重细节"><a href="#4-注重细节" class="headerlink" title="4.注重细节"></a>4.注重细节</h4><p>就像第一次见她时你的眼神一样,<br>输入框要求，键盘类型，以及输入框的交互效果等要考虑清楚。</p>
+<h2 id="over"><a href="#over" class="headerlink" title="over"></a>over</h2><p>散会。<br>画图的去画图，写代码的去写代码去吧。</p>
+<p>哦，您好，请提问。<br>前文的数据分析对产品有什么意义。</p>
+<p>这个问题啊，，，看，文末有彩蛋。</p>
+<hr>
+<p>这是彩蛋：</p>
+<p><img src="https://note.youdao.com/yws/public/resource/09bba0c71cfe48a564d4676e5005664c/xmlnote/7FD9FEDC5F1E43B6B62E7C568A23E1A1/2308" alt="image"></p>
+<p>摩羯座(Capricorn)12月22日-1月20日<br>坚强、睿智，都是摩羯的代名词。<br>心怀大志，坚忍不拔，精神世界的领袖，矛盾结合体。<br>摩羯座是十二星座中最有耐心，为事最小心、也是最善良的星座。他们做事脚踏实地，也比较固执，不达目的是不会放手的。他们的忍耐力也是出奇的强大，同时也非常勤奋。他们心中总是背负着很多的责任感，但往往又很没有安全感，不会完全地相信别人。</p>
+<p>摩羯座男性<br>摩羯座男生特别细心有责任感，对待谁，都会问心无愧，仁至义尽。是摩羯座整个人生当中的核心信条，只有在做到了自己该做到的事情之后摩羯座才能够坦然的去批评别人，去申述理论，因此摩羯座一直都站在正义的一方和大义的立场上。<br>摩羯座男生的爱情开始于疼爱，结束于伤痛。<br>因为摩羯座男生非常成熟，在爱情开始的时候多半是欣赏对方的天真，但是结束则是因为对方对自己的不理解。</p>
+<p>摩羯座女性<br>一板一眼的，戴着厚厚的平底眼镜，梳着中规中矩的头发，就连自己的衣着，也尽量以不突出不惹人瞩目为目标，摩羯座的女生就是这样，貌似不起眼的外表，不过，毅力惊人！<br>摩羯座可以连续十年作同一件简单的事情，只是单一重复仍然感觉乐趣无穷，这样的事情，在别的星座女生看来，简直不敢想象，不过摩羯座却能完成，而且津津有味。<br>也许正是由于这一点性格，摩羯座女生格外的深情，爱上一个人也很难改变自己的初衷，大多数从头爱到尾，最后在实在没有希望的时候才会放弃这种坚持，让人感觉有些心疼，这样的妹纸不多啦。</p>
+<hr>
+<p>欢迎关注：一只阿木木<br>关注数据，挖掘数据</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/11/23/从一杯果汁浅谈点点医生充值模块设计/" data-id="cjac7tejj000274qo3f2vthvu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/11/23/点点医生pk宝宝好孕， 大数据告诉你真相/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">点点医生pk宝宝好孕， 大数据告诉你真相</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/11/23/从一杯果汁浅谈点点医生充值模块设计/">从一杯果汁浅谈点点医生充值模块设计</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/点点医生pk宝宝好孕， 大数据告诉你真相/">点点医生pk宝宝好孕， 大数据告诉你真相</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/23/【万字长文】小数据时代医疗产品如何突破（1）/">【万字长文】：小数据时代医疗产品如何突破（1）</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/16/数据战争：双11狂欢的背后/">数据战争：双11狂欢的背后</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/07/第一个博客/">联系方式</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 yizhiamumu<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
